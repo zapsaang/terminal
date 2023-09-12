@@ -1,6 +1,12 @@
 # Go
-export GOPATH=$HOME/code/go
-export GOROOT=/usr/local/opt/go/libexec
+BREWGODIR=$(brew --prefix golang)
+if (( $BREWGODIR[(I)/go] > 0 )) {
+    export GOROOT=BREWGODIR/libexec
+} else {
+    export GOROOT=/usr/local/go
+}
+
+export GOPATH=$HOME/Code/go
 export PATH=$PATH:$GOPATH/bin
 
 alias gomt="go mod tidy"
