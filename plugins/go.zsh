@@ -1,7 +1,7 @@
 # Go
 BREWGODIR=$(brew --prefix golang)
 if (( $BREWGODIR[(I)/go] > 0 )) {
-    export GOROOT=$(echo $BREWGODIR/libexec)
+    export GOROOT="$BREWGODIR/libexec"
 } else {
     export GOROOT=/usr/local/go
 }
