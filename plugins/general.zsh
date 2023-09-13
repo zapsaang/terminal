@@ -1,5 +1,5 @@
 alias ll='ls -ahlF'
-alias la='ls -hA'
-alias l='ls -hCF'
+alias la='ls -A'
+alias l='ls -CF'
 alias pip='pip3'
 alias python='python3'
