@@ -76,9 +76,9 @@ zinit ice svn
 zinit snippet OMZP::extract
 
 # key binding
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
-bindkey ',' autosuggest-accept
+bindkey '^P' history-substring-search-up
+bindkey '^N' history-substring-search-down
+bindkey '^ ' autosuggest-accept
 
 # Others
 zinit load djui/alias-tips
