@@ -6,7 +6,7 @@ if (( $BREWGODIR[(I)/go] > 0 )) {
     export GOROOT=/usr/local/go
 }
 
-export GOPATH=$HOME/Code/go
+export GOPATH=$HOME/code/go
 export PATH=$PATH:$GOPATH/bin
 
 alias gomt="go mod tidy"
