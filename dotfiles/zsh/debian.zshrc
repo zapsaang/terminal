@@ -53,8 +53,6 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 zinit light zsh-users/zsh-history-substring-search
 zinit light zsh-users/zsh-autosuggestions
 
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
 zinit snippet ZSTP::general.zsh
 zinit snippet ZSTP::nvim.zsh
 zinit snippet ZSTP::brew.zsh
