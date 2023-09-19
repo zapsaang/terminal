@@ -71,6 +71,8 @@ zinit snippet OMZP::sudo/sudo.plugin.zsh
 
 zinit ice svn
 zinit snippet OMZP::extract
+zinit ice svn
+zinit snippet OMZP::golang
 
 # key binding
 bindkey '^P' history-substring-search-up
