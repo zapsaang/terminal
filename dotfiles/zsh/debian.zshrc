@@ -75,7 +75,7 @@ zinit snippet OMZP::extract
 # key binding
 bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
-bindkey '^ ' autosuggest-accept
+bindkey '^@' autosuggest-accept
 
 # Others
 zinit load djui/alias-tips
