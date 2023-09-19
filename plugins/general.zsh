@@ -11,6 +11,8 @@ alias python='python3'
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
+
 alias sudo='sudo -i'
+
 alias df='df -h'
 alias du='du -h'
