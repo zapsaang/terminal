@@ -21,16 +21,13 @@ zinit light-mode for \
 
 ### End of Zinit's installer chunk
 
-ZINIT_1MAP+=(
-    ZST:: https://github.com/zapsaang/terminal/trunk/
-    ZSTP:: https://github.com/zapsaang/terminal/trunk/plugins/
-    ZSTT:: https://github.com/zapsaang/terminal/trunk/themes/
-)
-ZINIT_2MAP+=(
-    ZST:: https://raw.githubusercontent.com/zapsaang/terminal/master/
-    ZSTP:: https://raw.githubusercontent.com/zapsaang/terminal/master/plugins/
-    ZSTT:: https://raw.githubusercontent.com/zapsaang/terminal/master/themes/
-)
+ZINIT_1MAP[ZST]=https://github.com/zapsaang/terminal/trunk/
+ZINIT_1MAP[ZSTP]=https://github.com/zapsaang/terminal/trunk/plugins/
+ZINIT_1MAP[ZSTT]=https://github.com/zapsaang/terminal/trunk/themes/
+
+ZINIT_2MAP[ZST]=https://raw.githubusercontent.com/zapsaang/terminal/master/
+ZINIT_2MAP[ZSTP]=https://raw.githubusercontent.com/zapsaang/terminal/master/plugins/
+ZINIT_2MAP[ZSTT]=https://raw.githubusercontent.com/zapsaang/terminal/master/themes/
 
 # zsh
 zinit ice lucid wait='1' atinit='zpcompinit'
