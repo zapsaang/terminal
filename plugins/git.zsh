@@ -1,1 +1,3 @@
-alias gprc="git add . && git commit -m 'resolve conflict' && git push"
+function grcp() {
+  git add . & git commit -m 'resolve conflict' & git push
+}
