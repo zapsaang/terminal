@@ -54,6 +54,7 @@ zinit snippet ZSTP::general.zsh
 zinit snippet ZSTP::nvim.zsh
 zinit snippet ZSTP::brew.zsh
 zinit snippet ZSTP::go.zsh
+zinit snippet ZSTP::git.zsh
 zinit snippet ZSTT::fzf_dracula.zsh
 
 zinit snippet OMZL::key-bindings.zsh
