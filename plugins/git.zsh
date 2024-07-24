@@ -5,3 +5,6 @@ function grcp() {
     git checkout -
   fi
 }
+
+alias gs="git stash"
+alias gsp="git stash pop"
