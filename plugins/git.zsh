@@ -8,4 +8,5 @@ function grcp() {
 
 alias gs="git stash"
 alias gsp="git stash pop"
-alias gcp="git checkout -"
+alias gck="git checkout"
+alias gckp="git checkout -"
