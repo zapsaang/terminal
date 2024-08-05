@@ -29,12 +29,13 @@ ZINIT_2MAP[ZST::]=https://raw.githubusercontent.com/zapsaang/terminal/master/
 ZINIT_2MAP[ZSTP::]=https://raw.githubusercontent.com/zapsaang/terminal/master/plugins/
 ZINIT_2MAP[ZSTT::]=https://raw.githubusercontent.com/zapsaang/terminal/master/themes/
 
+# proxy
+zinit snippet ZSTP::proxy.zsh
+
 # zsh
 zinit ice lucid wait='1' atinit='zpcompinit'
 zinit light zdharma-continuum/fast-syntax-highlighting
 zinit light Aloxaf/fzf-tab
-
-zinit snippet ZSTP::proxy.zsh
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
