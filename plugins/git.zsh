@@ -6,6 +6,11 @@ function grcp() {
   fi
 }
 
+function gpf() {
+  current_branch=$(git rev-parse --abbrev-ref HEAD)
+  git pull --force origin "$current_branch":"$current_branch"
+}
+
 alias gs="git stash"
 alias gsp="git stash pop"
 alias gck="git checkout"
