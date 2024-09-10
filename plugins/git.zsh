@@ -6,7 +6,7 @@ function grcp() {
   fi
 }
 
-function gpf() {
+function gplf() {
   current_branch=$(git rev-parse --abbrev-ref HEAD)
   git pull --force origin "$current_branch":"$current_branch"
 }
