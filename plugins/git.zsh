@@ -1,8 +1,18 @@
 function grcp() {
-  git add . && git commit -m "resolve conflict" && git push
-  current_branch=$(git rev-parse --abbrev-ref HEAD)
-  if [[ "$current_branch" == "conflict"* ]]; then
-    git checkout -
+  grc && gprc
+}
+
+function grc() {
+  git add . && git commit -m "resolve conflict"
+}
+
+function gprc() { 
+  git push
+  if [$? -eq 0]; then 
+    current_branch=$(git rev-parse --abbrev-ref HEAD)
+    if [[ "$current_branch" == "conflict"* ]]; then
+      git checkout -
+    fi
   fi
 }
 
