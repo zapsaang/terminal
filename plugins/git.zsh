@@ -6,13 +6,19 @@ function grc() {
   git add . && git commit -m "resolve conflict"
 }
 
-function gprc() { 
+function gprc() {
   git push
-  if [ $? -eq 0 ]; then 
+  if [ $? -eq 0 ]; then
     current_branch=$(git rev-parse --abbrev-ref HEAD)
-    if [[ "$current_branch" == "conflict"* ]]; then
+    if [[ "$current_branch" == conflict* ]]; then
+      echo "On conflict branch, switching back..."
       git checkout -
+    else
+      echo "Not on a conflict branch, staying on $current_branch."
     fi
+  else
+    echo "git push failed, please check the error."
+    return 1
   fi
 }
 
