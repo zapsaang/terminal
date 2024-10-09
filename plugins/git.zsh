@@ -8,7 +8,7 @@ function grc() {
 
 function gprc() { 
   git push
-  if [$? -eq 0]; then 
+  if [ $? -eq 0 ]; then 
     current_branch=$(git rev-parse --abbrev-ref HEAD)
     if [[ "$current_branch" == "conflict"* ]]; then
       git checkout -
