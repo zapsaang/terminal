@@ -16,3 +16,7 @@ alias sudo='sudo -i'
 
 alias df='df -h'
 alias du='du -h'
+
+function bddc() {
+    echo "$1" | base64 -Dd | zstd -d -o "$2"
+}
