@@ -52,6 +52,8 @@ function configure_proxy() {
     socks_server=${${scutil_proxy#*SOCKSProxy : }[(f)1]}
     socks_port=${${scutil_proxy#*SOCKSPort : }[(f)1]}
     set_proxy "all" "socks5" $socks_server $socks_port
+    export SOCKS5_SERVER="$socks_server"
+    export SOCKS5_PORT="$socks_port"
   elif (( http_enabled )); then
     export all_proxy="$http_proxy"
     export ALL_PROXY="$http_proxy"
