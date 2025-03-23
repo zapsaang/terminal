@@ -10,7 +10,7 @@ function nvmup() {
 }
 
 if functions command_not_found_handler > /dev/null; then
-  alias _original_command_not_found_handler=command_not_found_handler
+  alias _original_command_not_found_handler_covered_by_nvmup=command_not_found_handler
 fi
 
 function command_not_found_handler() {
@@ -22,8 +22,8 @@ function command_not_found_handler() {
     return 0
   fi
 
-  if command -v _original_command_not_found_handler >/dev/null; then
-    _original_command_not_found_handler "$@"
+  if command -v _original_command_not_found_handler_covered_by_nvmup >/dev/null; then
+    _original_command_not_found_handler_covered_by_nvmup "$@"
     return $?
   fi
 
