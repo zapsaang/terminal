@@ -20,3 +20,7 @@ alias du='du -h'
 function bddc() {
     echo "$1" | base64 -Dd | zstd -d -o "$2"
 }
+
+function bdsn() {
+    echo "$1" | base64 -Dd | snzip -dc > "$2"
+}
