@@ -9,7 +9,7 @@ function nvmup() {
   fi
 }
 
-if functions command_not_found_handler > /dev/null; then
+if functions command_not_found_handler > /dev/null && ! alias _original_command_not_found_handler_covered_by_nvmup > /dev/null; then
   alias _original_command_not_found_handler_covered_by_nvmup=command_not_found_handler
 fi
 
