@@ -14,11 +14,11 @@ if functions command_not_found_handler > /dev/null && ! alias _original_command_
 fi
 
 function command_not_found_handler() {
-  if [[ "$1" == "npm" ]]; then
-    echo "npm not found, try to automatically load nvm..."
+  if [[ "$1" == "npm" || "$1" == "node" ]]; then
+    echo "$1 not found, try to automatically load nvm..."
     nvmup
-    echo "retry npm..."
-    exec npm "${@:2}"
+    echo "retry $1..."
+    exec $1 "${@:2}"
     return 0
   fi
 
