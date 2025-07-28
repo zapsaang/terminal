@@ -1,5 +1,5 @@
-function grcp() {
-  grc && gprc
+function grcsp() {
+  grc && sleep $1 && gprc
 }
 
 function grc() {
