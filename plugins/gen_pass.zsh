@@ -68,29 +68,29 @@ gen_pass() {
   local charset_length=${#charset}
   local password=""
 
-  local counter=0
+  local index=0
+  local hash_round=0
+  
   while [ ${#password} -lt $length ]; do
-    local hash_input="${input}${counter}"
-    local hash=$(printf "%s" "$hash_input" | sha512sum | awk '{print $1}')
-    
-    local i=0
-    while [ $i -lt ${#hash} ] && [ ${#password} -lt $length ]; do
-      local hex_byte="${hash:$i:2}"
-      local byte_value=$((0x$hex_byte))
-      
-      local char_index=$((byte_value % charset_length))
+    local hash_input="${input}${hash_round}${index}"
+    local hash=$(printf "%s" "$hash_input" | sha256sum | awk '{print $1}')
+    local byte_position=0
+    while [ $byte_position -lt 32 ] && [ ${#password} -lt $length ]; do
+      local hex_byte1="${hash:$((byte_position*2)):2}"
+      local hex_byte2="${hash:$(((byte_position*2+2) % 64)):2}"
+      local combined_value=$(( (0x$hex_byte1 << 8) | 0x$hex_byte2 ))
+      local char_index=$((combined_value % charset_length))
       local char="${charset:$char_index:1}"
-      password="${password}${char}"
       
-      i=$((i + 2))
+      password="${password}${char}"
+      byte_position=$((byte_position + 2))
     done
     
-    counter=$((counter + 1))
+    hash_round=$((hash_round + 1))
   done
 
   password="${password:0:$length}"
-  
-  local hash=$(printf "%s" "$input" | sha1sum | awk '{print $1}')
+  local type_hash=$(printf "%s" "$input" | sha1sum | awk '{print $1}')
 
   replace_char_at_pos() {
     local str="$1"
@@ -111,35 +111,34 @@ gen_pass() {
 
   if [ "$level" != "low" ]; then
     if ! printf "%s" "$password" | grep -q '[A-Z]' 2>/dev/null; then
-      local pos=$((0x${hash:0:2} % length))
-      local idx=$((0x${hash:2:2} % 26))
-      local sym="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-      local char="${sym:$idx:1}"
-      password=$(replace_char_at_pos "$password" $pos "$char")
+      local pos=$((0x${type_hash:0:2} % length))
+      local char_idx=$((0x${type_hash:2:2} % 26))
+      local char="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+      local new_char="${char:$char_idx:1}"
+      password=$(replace_char_at_pos "$password" $pos "$new_char")
     fi
     
     if ! printf "%s" "$password" | grep -q '[a-z]' 2>/dev/null; then
-      local pos=$((0x${hash:4:2} % length))
-      local idx=$((0x${hash:6:2} % 26))
-      local sym="abcdefghijklmnopqrstuvwxyz"
-      local char="${sym:$idx:1}"
-      password=$(replace_char_at_pos "$password" $pos "$char")
+      local pos=$((0x${type_hash:4:2} % length))
+      local char_idx=$((0x${type_hash:6:2} % 26))
+      local char="abcdefghijklmnopqrstuvwxyz"
+      local new_char="${char:$char_idx:1}"
+      password=$(replace_char_at_pos "$password" $pos "$new_char")
     fi
     
     if ! printf "%s" "$password" | grep -q '[0-9]' 2>/dev/null; then
-      local pos=$((0x${hash:8:2} % length))
-      local idx=$((0x${hash:10:2} % 10))
-      local char="$idx"
-      password=$(replace_char_at_pos "$password" $pos "$char")
+      local pos=$((0x${type_hash:8:2} % length))
+      local digit=$((0x${type_hash:10:2} % 10))
+      password=$(replace_char_at_pos "$password" $pos "$digit")
     fi
   fi
 
   if [ "$level" = "strong" ]; then
     if ! printf "%s" "$password" | grep -q "[$specials]" 2>/dev/null; then
-      local pos=$((0x${hash:12:2} % length))
-      local idx=$((0x${hash:14:2} % ${#specials}))
-      local sym="${specials:$idx:1}"
-      password=$(replace_char_at_pos "$password" $pos "$sym")
+      local pos=$((0x${type_hash:12:2} % length))
+      local spec_idx=$((0x${type_hash:14:2} % ${#specials}))
+      local new_char="${specials:$spec_idx:1}"
+      password=$(replace_char_at_pos "$password" $pos "$new_char")
     fi
   fi
 
