@@ -71,8 +71,7 @@ EOF
 
   while [ ${#password} -lt $length ]; do
     local seed="${input}${counter}"
-    local hash
-    hash=$(printf "%s" "$seed" | sha256sum | awk '{print $1}')
+    local hash=$(printf "%s" "$seed" | sha256sum | awk '{print $1}')
     
     local i=0
     while [ $i -lt ${#hash} ] && [ ${#password} -lt $length ]; do
