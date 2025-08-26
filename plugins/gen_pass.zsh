@@ -68,28 +68,27 @@ gen_pass() {
   local charset_length=${#charset}
   local password=""
 
-  local index=0
-  local hash_round=0
+  local counter=0
   
   while [ ${#password} -lt $length ]; do
-    local hash_input="${input}${hash_round}${index}"
-    local hash=$(printf "%s" "$hash_input" | sha256sum | awk '{print $1}')
-    local byte_position=0
-    while [ $byte_position -lt 32 ] && [ ${#password} -lt $length ]; do
-      local hex_byte1="${hash:$((byte_position*2)):2}"
-      local hex_byte2="${hash:$(((byte_position*2+2) % 64)):2}"
-      local combined_value=$(( (0x$hex_byte1 << 8) | 0x$hex_byte2 ))
-      local char_index=$((combined_value % charset_length))
+    local seed="${input}${counter}"
+    local hash=$(printf "%s" "$seed" | sha256sum | awk '{print $1}')
+    
+    local i=0
+    while [ $i -lt 64 ] && [ ${#password} -lt $length ]; do
+      local hex_chunk="${hash:$i:2}"
+      local value=$((0x$hex_chunk))
+      local char_index=$((value % charset_length))
       local char="${charset:$char_index:1}"
-      
       password="${password}${char}"
-      byte_position=$((byte_position + 2))
+      i=$((i + 2))
     done
     
-    hash_round=$((hash_round + 1))
+    counter=$((counter + 1))
   done
 
   password="${password:0:$length}"
+  
   local type_hash=$(printf "%s" "$input" | sha1sum | awk '{print $1}')
 
   replace_char_at_pos() {
@@ -98,10 +97,7 @@ gen_pass() {
     local char="$3"
     local len=${#str}
     
-    if [ $pos -ge $len ]; then
-      pos=$((len - 1))
-    fi
-    
+    pos=$((pos % len))
     if [ $pos -lt 0 ]; then
       pos=0
     fi
@@ -113,19 +109,17 @@ gen_pass() {
     if ! printf "%s" "$password" | grep -q '[A-Z]' 2>/dev/null; then
       local pos=$((0x${type_hash:0:2} % length))
       local char_idx=$((0x${type_hash:2:2} % 26))
-      local char="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-      local new_char="${char:$char_idx:1}"
+      local new_char=$(printf "%s" {A..Z} | cut -c$((char_idx + 1)))
       password=$(replace_char_at_pos "$password" $pos "$new_char")
     fi
     
     if ! printf "%s" "$password" | grep -q '[a-z]' 2>/dev/null; then
       local pos=$((0x${type_hash:4:2} % length))
       local char_idx=$((0x${type_hash:6:2} % 26))
-      local char="abcdefghijklmnopqrstuvwxyz"
-      local new_char="${char:$char_idx:1}"
+      local new_char=$(printf "%s" {a..z} | cut -c$((char_idx + 1)))
       password=$(replace_char_at_pos "$password" $pos "$new_char")
     fi
-    
+
     if ! printf "%s" "$password" | grep -q '[0-9]' 2>/dev/null; then
       local pos=$((0x${type_hash:8:2} % length))
       local digit=$((0x${type_hash:10:2} % 10))
