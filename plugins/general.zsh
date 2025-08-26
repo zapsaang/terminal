@@ -30,6 +30,16 @@ gen_pass() {
   local length="${2:-64}"
   local level="${3:-medium}"
 
+  if [ -z "$input" ]; then
+    echo "Error: input is required" >&2
+    return 1
+  fi
+
+  if ! [[ "$length" =~ ^[0-9]+$ ]] || [ "$length" -le 0 ]; then
+    echo "Error: length must be a positive integer" >&2
+    return 1
+  fi
+
   local charset=""
   local specials='!@#%^&*()-_=+[]{}:,.?'
 
@@ -55,29 +65,48 @@ gen_pass() {
   local password=$(printf "%s" "$filtered" | cut -c1-"${length}")
   local hash=$(printf "%s" "$input" | sha1sum | awk '{print $1}')
 
-  if [[ "$level" != "low" ]]; then
-    [[ ! "$password" =~ [A-Z] ]] && {
+  replace_char_at_pos() {
+    local str="$1"
+    local pos="$2"
+    local char="$3"
+    local len=${#str}
+    
+    if [ $pos -ge $len ]; then
+      pos=$((len - 1))
+    fi
+    
+    if [ $pos -lt 0 ]; then
+      pos=0
+    fi
+    
+    echo "${str:0:$pos}${char}${str:$((pos+1))}"
+  }
+
+  if [ "$level" != "low" ]; then
+    if ! printf "%s" "$password" | grep -q '[A-Z]'; then
       local pos=$((0x${hash:0:2} % length))
       local sym=$(printf "%s" {A..Z} | cut -c$((0x${hash:2:2} % 26 + 1)))
-      password="${password:0:$pos}$sym${password:$((pos+1))}"
-    }
-    [[ ! "$password" =~ [a-z] ]] && {
+      password=$(replace_char_at_pos "$password" $pos "$sym")
+    fi
+    if ! printf "%s" "$password" | grep -q '[a-z]'; then
       local pos=$((0x${hash:4:2} % length))
       local sym=$(printf "%s" {a..z} | cut -c$((0x${hash:6:2} % 26 + 1)))
-      password="${password:0:$pos}$sym${password:$((pos+1))}"
-    }
-    [[ ! "$password" =~ [0-9] ]] && {
+      password=$(replace_char_at_pos "$password" $pos "$sym")
+    fi
+    if ! printf "%s" "$password" | grep -q '[0-9]'; then
       local pos=$((0x${hash:8:2} % length))
       local sym=$((0x${hash:10:2} % 10))
-      password="${password:0:$pos}$sym${password:$((pos+1))}"
-    }
+      password=$(replace_char_at_pos "$password" $pos "$sym")
+    fi
   fi
 
-  if [[ "$level" == "strong" ]] && [[ ! "$password" =~ [$specials] ]]; then
-    local pos=$((0x${hash:12:2} % length))
-    local idx=$((0x${hash:14:2} % ${#specials}))
-    local sym="${specials:$idx:1}"
-    password="${password:0:$pos}$sym${password:$((pos+1))}"
+  if [ "$level" = "strong" ]; then
+    if ! printf "%s" "$password" | grep -q "[$specials]"; then
+      local pos=$((0x${hash:12:2} % length))
+      local idx=$((0x${hash:14:2} % ${#specials}))
+      local sym="${specials:$idx:1}"
+      password=$(replace_char_at_pos "$password" $pos "$sym")
+    fi
   fi
 
   echo "$password"
