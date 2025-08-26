@@ -35,12 +35,19 @@ gck() {
 
   local branch="$1"
 
-  git fetch --all --prune > /dev/null 2>&1
-
   if git show-ref --verify --quiet "refs/heads/$branch"; then
     echo "Switching to existing local branch '$branch'"
     git checkout "$branch"
+
+    if git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+      git pull --ff-only
+    fi
     return $?
+  fi
+
+  if ! git ls-remote --exit-code --heads origin "$branch" > /dev/null 2>&1; then
+    echo "Fetching remote branches because '$branch' not found locally..."
+    git fetch --all --prune > /dev/null 2>&1
   fi
 
   if git ls-remote --heads origin "$branch" | grep -q "$branch"; then
@@ -63,6 +70,10 @@ gck() {
       git pull --ff-only
     else
       git checkout "$target_branch"
+
+      if git show-ref --verify --quiet "refs/remotes/origin/$target_branch"; then
+        git pull --ff-only
+      fi
     fi
     return $?
   fi
@@ -70,6 +81,7 @@ gck() {
   echo "No branch matching '$branch'. Creating new branch '$branch'."
   git checkout -b "$branch"
 }
+
 
 alias gs="git stash"
 alias gsp="git stash pop"
