@@ -55,10 +55,9 @@ zinit light zsh-users/zsh-history-substring-search
 zinit light zsh-users/zsh-autosuggestions
 
 zinit snippet ZSTP::general.zsh
+zinit snippet ZSTP::docker.zsh
 zinit snippet ZSTP::nvim.zsh
-zinit snippet ZSTP::brew.zsh
-zinit snippet ZSTP::go.zsh
-zinit snippet ZSTP::git.zsh
+zinit snippet ZSTP::gen_pass.zsh
 zinit snippet ZSTT::fzf_dracula.zsh
 
 zinit snippet OMZL::key-bindings.zsh
@@ -69,7 +68,6 @@ zinit snippet OMZL::clipboard.zsh
 zinit snippet OMZL::theme-and-appearance.zsh
 zinit snippet OMZP::colored-man-pages/colored-man-pages.plugin.zsh
 zinit snippet OMZP::git/git.plugin.zsh
-zinit snippet OMZP::sudo/sudo.plugin.zsh
 
 zinit ice svn
 zinit snippet OMZP::extract
