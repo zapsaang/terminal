@@ -1,9 +1,9 @@
-export LS_OPTINS='--color=auto'
+export LS_OPTIONS='--color=auto'
 
-alias ll='ls $LS_OPTINS -ahlF'
-alias la='ls $LS_OPTINS -A'
-alias ls='ls $LS_OPTINS'
-alias l='ls $LS_OPTINS -CF'
+alias ll='ls $LS_OPTIONS -ahlF'
+alias la='ls $LS_OPTIONS -A'
+alias ls='ls $LS_OPTIONS'
+alias l='ls $LS_OPTIONS -CF'
 
 alias pip='pip3'
 alias python='python3'
