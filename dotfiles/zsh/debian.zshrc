@@ -69,9 +69,6 @@ zinit snippet OMZL::theme-and-appearance.zsh
 zinit snippet OMZP::colored-man-pages/colored-man-pages.plugin.zsh
 zinit snippet OMZP::git/git.plugin.zsh
 
-zinit ice svn
-zinit snippet OMZP::extract
-
 # key binding
 bindkey '^P' history-substring-search-up
 bindkey '^N' history-substring-search-down
