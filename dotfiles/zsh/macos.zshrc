@@ -21,13 +21,17 @@ zinit light-mode for \
 
 ### End of Zinit's installer chunk
 
-ZINIT_1MAP[ZST::]=https://github.com/zapsaang/terminal/trunk/
-ZINIT_1MAP[ZSTP::]=https://github.com/zapsaang/terminal/trunk/plugins/
-ZINIT_1MAP[ZSTT::]=https://github.com/zapsaang/terminal/trunk/themes/
-
-ZINIT_2MAP[ZST::]=https://raw.githubusercontent.com/zapsaang/terminal/master/
-ZINIT_2MAP[ZSTP::]=https://raw.githubusercontent.com/zapsaang/terminal/master/plugins/
-ZINIT_2MAP[ZSTT::]=https://raw.githubusercontent.com/zapsaang/terminal/master/themes/
+ZINIT_1MAP+=(
+  ZST:: https://github.com/zapsaang/terminal/trunk/
+  ZSTP:: https://github.com/zapsaang/terminal/trunk/plugins/
+  ZSTT:: https://github.com/zapsaang/terminal/trunk/themes/
+) 2>/dev/null || true
+ZINIT_2MAP+=(
+  ZST:: https://raw.githubusercontent.com/zapsaang/terminal/master/
+  ZSTP:: https://raw.githubusercontent.com/zapsaang/terminal/master/plugins/
+  ZSTT:: https://raw.githubusercontent.com/zapsaang/terminal/master/themes/
+) 2>/dev/null || true
+readonly ZINIT_1MAP ZINIT_2MAP 2>/dev/null || true
 
 # proxy
 zinit snippet ZSTP::proxy.zsh
@@ -59,6 +63,8 @@ zinit snippet ZSTP::icloud.zsh
 zinit snippet ZSTP::brew.zsh
 zinit snippet ZSTP::go.zsh
 zinit snippet ZSTP::git.zsh
+zinit snippet ZSTP::nvm.zsh
+zinit snippet ZSTP::gen_pass.zsh
 zinit snippet ZSTT::fzf_dracula.zsh
 
 zinit snippet OMZL::key-bindings.zsh
