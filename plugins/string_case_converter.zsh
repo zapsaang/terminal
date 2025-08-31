@@ -46,38 +46,50 @@ scc() {
 		s=${s//$'\n'/\\n}
 		s=${s//$'\r'/\\r}
 		s=${s//$'\t'/\\t}
+		s=${s//$'\b'/\\b}
+		s=${s//$'\f'/\\f}
 		printf '%s' "$s"
 	}
 	# Usage:
-	#   string_case -f <format> "input"         # convert once
-	#   echo "input" | string_case -f <format>
-	#   string_case --alfred "input"            # Alfred Script Filter JSON
-	#   string_case --list                       # list formats
-	#   string_case --help
+	#   scc -f <format> "input"         # convert once
+	#   echo "input" | scc -f <format>
+	#   scc "input"                     # auto-detect Alfred mode (if no format specified)
+	#   scc --alfred "input"            # explicit Alfred Script Filter JSON
+	#   scc --list                      # list formats
+	#   scc --help
 
-	local format="" input="" mode="convert"
+	local format="" input="" mode="convert" auto_detect=true
 
 	while [ $# -gt 0 ]; do
 		case "$1" in
 			-f|--format)
 				shift || true
 				format="${1:-}"
+				auto_detect=false  # Explicit format specified, disable auto-detect
 				;;
 			--alfred)
 				mode="alfred"
+				auto_detect=false  # Explicit Alfred mode
+				shift || true
+				# In alfred mode, next argument is the input
+				if [ $# -gt 0 ]; then
+					input="$1"
+				fi
 				;;
 			--list)
 				mode="list"
+				auto_detect=false  # Explicit list mode
 				;;
 			-h|--help)
 				cat <<EOF
-string_case - Convert strings between common case styles
+scc - Convert strings between common case styles
 
 Usage:
-  string_case -f <format> "input string"
-  echo "input string" | string_case -f <format>
-  string_case --alfred "input string"
-  string_case --list
+  scc -f <format> "input string"
+  echo "input string" | scc -f <format>
+  scc "input string"                  (auto-detects Alfred mode)
+  scc --alfred "input string"         (explicit Alfred mode)
+  scc --list
 
 Formats (aliases):
   pascal | PascalCase | 大驼峰
@@ -85,8 +97,8 @@ Formats (aliases):
   snake  | snake_case | 小蛇形
   snake_upper | SNAKE_CASE | 大蛇形
   snake_cap | Capitalized_Snake_Case | 首字母大写蛇形
-  kebab  | kebab-case
-  dot    | dot.case
+  kebab  | kebab-case | 短横线
+  dot    | dot.case | 点号
   upper  | UPPER | 全大写
   lower  | lower | 全小写
 EOF
@@ -114,6 +126,22 @@ EOF
 	# If no explicit input, read from stdin
 	if [ -z "${input}" ] && [ ! -t 0 ]; then
 		input=$(cat)
+		auto_detect=false  # Stdin input usually means specific format conversion
+	fi
+
+	# Auto-detect Alfred mode if no explicit format/mode specified and we have input
+	if [ "$auto_detect" = "true" ] && [ -n "${input}" ] && [ "$mode" = "convert" ] && [ -z "${format}" ]; then
+		# Additional checks for Alfred environment
+		if [ -n "${alfred_workflow_uid:-}" ] || [ -n "${alfred_workflow_name:-}" ] || [ -n "${alfred_version:-}" ]; then
+			# Definite Alfred environment
+			mode="alfred"
+		elif [ ! -t 1 ]; then
+			# Output is being piped/redirected, likely Alfred
+			mode="alfred"
+		else
+			# Interactive terminal, assume Alfred mode for convenience
+			mode="alfred"
+		fi
 	fi
 
 	# Centralized empty input handling
@@ -127,7 +155,11 @@ EOF
 				# List mode doesn't need input, handled later
 				;;
 			*)
-				printf 'Error: no input string provided.\n' >&2
+				if [ "$auto_detect" = "true" ]; then
+					printf 'Error: no input string provided. Use "scc --help" for usage information.\n' >&2
+				else
+					printf 'Error: no input string provided.\n' >&2
+				fi
 				return 2
 				;;
 		esac
@@ -156,8 +188,8 @@ EOF
 		snake|snake_case|小蛇形) fmt="snake" ;;
 		snake_upper|SNAKE_CASE|大蛇形) fmt="snake_upper" ;;
 		snake_cap|Capitalized_Snake_Case|首字母大写蛇形) fmt="snake_cap" ;;
-		kebab|kebab-case) fmt="kebab" ;;
-		dot|dot-case|dot.case) fmt="dot" ;;
+		kebab|kebab-case|短横线) fmt="kebab" ;;
+		dot|dot-case|dot.case|点号) fmt="dot" ;;
 		upper|UPPER|全大写) fmt="upper" ;;
 		lower|LOWER|全小写) fmt="lower" ;;
 		*) 
@@ -167,12 +199,10 @@ EOF
 			;;
 	esac
 
-	if [ "${mode}" = "convert" ]; then
-		if [ -z "${fmt}" ]; then
-			printf 'Error: format not specified or invalid.\n' >&2
-			return 2
-		fi
-		# Remove duplicate input check - already handled above
+	# Validate format for convert mode
+	if [ "${mode}" = "convert" ] && [ -z "${fmt}" ]; then
+		printf 'Error: format not specified or invalid.\n' >&2
+		return 2
 	fi
 
 	# Unified text normalization with intelligent Unicode handling
@@ -238,9 +268,8 @@ EOF
 		# Use portable word splitting that works in both bash and zsh
 		if [[ "$norm_lower" =~ [[:space:]] ]]; then
 			# Convert spaces to newlines and process
-			local temp_split
+			local temp_split word
 			temp_split=$(printf '%s' "$norm_lower" | tr ' ' '\n')
-			local word
 			while IFS= read -r word; do
 				[ -n "$word" ] && words+=("$word")
 			done <<< "$temp_split"
@@ -300,7 +329,7 @@ EOF
 			lower)
 				_ascii_case_convert "$input" "lower"
 				;;
-            *) 
+			*) 
 				printf '' 
 				return 2 
 				;;
@@ -308,11 +337,6 @@ EOF
 	}
 
 	if [ "${mode}" = "convert" ]; then
-		if [ -z "${fmt}" ]; then
-			printf 'Error: format not specified or invalid.\n' >&2
-			return 2
-		fi
-		
 		# Handle edge case: empty normalized input for word-based formats
 		if [ ${#words[@]} -eq 0 ] && [[ ! "$fmt" =~ ^(upper|lower)$ ]]; then
 			printf ''
@@ -331,8 +355,8 @@ EOF
 		'snake_case | 小蛇形'
 		'SNAKE_CASE | 大蛇形'
 		'Capitalized_Snake_Case | 首字母大写蛇形'
-		'kebab-case'
-		'dot.case'
+		'kebab-case | 短横线'
+		'dot.case | 点号'
 		'UPPER | 全大写'
 		'lower | 全小写'
 	)
@@ -346,8 +370,8 @@ EOF
 	done
 
 	printf '{"items": ['
-	local first_item=1 value label esc_title esc_arg esc_sub
-	for i in "${!styles[@]}"; do
+	local first_item=1 value label esc_title esc_arg esc_sub i=1
+	for style in "${styles[@]}"; do
 		value="${values[$i]}"
 		# Skip empty results
 		[ -z "$value" ] && continue
@@ -360,6 +384,7 @@ EOF
 		if [ $first_item -eq 0 ]; then printf ','; else first_item=0; fi
 		printf '{"title":"%s","subtitle":"%s","arg":"%s","text":{"copy":"%s","largetype":"%s"}}' \
 			"$esc_title" "$esc_sub" "$esc_arg" "$esc_arg" "$esc_title"
+		i=$((i+1))
 	done
 	printf ']}'
 }
