@@ -74,7 +74,9 @@ scc() {
 				# In alfred mode, next argument is the input
 				if [ $# -gt 0 ]; then
 					input="$1"
+					shift || true
 				fi
+				continue  # Skip the main shift at the end of the loop
 				;;
 			--list)
 				mode="list"
@@ -370,8 +372,9 @@ EOF
 	done
 
 	printf '{"items": ['
-	local first_item=1 value label esc_title esc_arg esc_sub i=1
+	local first_item=1 value label esc_title esc_arg esc_sub i=0
 	for style in "${styles[@]}"; do
+		i=$((i+1))
 		value="${values[$i]}"
 		# Skip empty results
 		[ -z "$value" ] && continue
@@ -384,7 +387,6 @@ EOF
 		if [ $first_item -eq 0 ]; then printf ','; else first_item=0; fi
 		printf '{"title":"%s","subtitle":"%s","arg":"%s","text":{"copy":"%s","largetype":"%s"}}' \
 			"$esc_title" "$esc_sub" "$esc_arg" "$esc_arg" "$esc_title"
-		i=$((i+1))
 	done
 	printf ']}'
 }
