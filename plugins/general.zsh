@@ -24,3 +24,7 @@ bddc() {
 bdsn() {
     echo "$1" | base64 -Dd | snzip -dc > "$2"
 }
+
+7zxe() {
+    PASSWORD=$(gen_pass -i "$1") 7zz x -p"$PASSWORD" "$1"
+}
