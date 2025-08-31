@@ -9,6 +9,7 @@ ucc() {
     local _detect_input_type() {
         local input="$1"
         
+        # 移除首尾空白 - 使用更安全的方法，避免shell重新解释字符串
         # 移除前导空白
         input="${input#"${input%%[![:space:]]*}"}"
         # 移除尾随空白  
@@ -484,6 +485,10 @@ EOF
                 show_analysis=true
                 shift
                 ;;
+            --alfred)
+                alfred_mode=true
+                shift
+                ;;
             -f|--format)
                 if [[ -n "$2" ]]; then
                     output_format="$2"
@@ -521,6 +526,7 @@ unicode_convert - 智能Unicode字符转换函数
     -q, --quiet     静默模式，只输出转换结果
     -a, --analyze   显示输入类型检测信息
     -f, --format    指定输出格式 (unicode|hex|url|base64)
+    --alfred        强制使用Alfred模式，输出JSON格式的列表选项
     --alfred-simple 在Alfred环境中使用简洁模式输出
     -h, --help      显示此帮助信息
 
@@ -531,9 +537,11 @@ unicode_convert - 智能Unicode字符转换函数
     unicode_convert "E4B8ADE69687"
     unicode_convert -f hex "测试"
     unicode_convert -j "🌍"
+    unicode_convert --alfred "hello"
     
 Alfred Workflow 使用:
     默认情况下，在Alfred环境中会输出JSON格式的列表选项
+    使用 --alfred 参数可在任何环境中强制启用Alfred模式
     使用 --alfred-simple 参数可获得传统的简洁输出
 EOF
                 return 0
