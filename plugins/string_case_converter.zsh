@@ -63,20 +63,17 @@ scc() {
 	while [ $# -gt 0 ]; do
 		case "$1" in
 			-f|--format)
-				shift || true
-				format="${1:-}"
+				if [ $# -lt 2 ]; then
+					printf 'Error: -f/--format requires an argument.\n' >&2
+					return 2
+				fi
+				shift
+				format="$1"
 				auto_detect=false  # Explicit format specified, disable auto-detect
 				;;
 			--alfred)
 				mode="alfred"
 				auto_detect=false  # Explicit Alfred mode
-				shift || true
-				# In alfred mode, next argument is the input
-				if [ $# -gt 0 ]; then
-					input="$1"
-					shift || true
-				fi
-				continue  # Skip the main shift at the end of the loop
 				;;
 			--list)
 				mode="list"
@@ -122,7 +119,7 @@ EOF
 				fi
 				;;
 		esac
-		shift || true
+		shift
 	done
 
 	# If no explicit input, read from stdin
