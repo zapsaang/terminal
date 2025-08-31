@@ -607,11 +607,11 @@ EOF
     case "$input_type" in
         "unicode")
             result=$(_unicode_to_char "$input_data")
-            conversion_info="Unicode码点 → 字符"
+            conversion_info="Unicode字符码点 → 字符"
             ;;
         "unicode_backslash")
             result=$(_unicode_backslash_to_char "$input_data")
-            conversion_info="\\uXXXX格式 → 字符串"
+            conversion_info="Unicode转义序列 → 字符串"
             ;;
         "hex")
             result=$(_hex_to_str "$input_data")
