@@ -26,5 +26,7 @@ bdsn() {
 }
 
 7zxe() {
-    PASSWORD=$(gen_pass -i "$1") 7zz x -p"$PASSWORD" "$1"
+    XE_PASSWORD=$(gen_pass -i "$1")
+    7zz x -p"$XE_PASSWORD" "$1"
+    unset XE_PASSWORD
 }
