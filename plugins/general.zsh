@@ -27,6 +27,6 @@ bdsn() {
 
 7zxe() {
     XE_PASSWORD=$(gen_pass -i "$1")
-    7zz x -p"$XE_PASSWORD" "$1"
+    7zz x -p"$XE_PASSWORD" -so "$1" | tar -xf -
     unset XE_PASSWORD
 }
