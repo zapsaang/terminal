@@ -91,8 +91,8 @@ Usage:
   scc --list
 
 Formats (aliases):
-  pascal | PascalCase | 大驼峰
   camel  | camelCase  | 小驼峰
+  pascal | PascalCase | 大驼峰
   snake  | snake_case | 小蛇形
   snake_upper | SNAKE_CASE | 大蛇形
   snake_cap | Capitalized_Snake_Case | 首字母大写蛇形
@@ -166,8 +166,8 @@ EOF
 
 	if [ "${mode}" = "list" ]; then
 		cat <<EOF
-pascal
 camel
+pascal
 snake
 snake_upper
 snake_cap
@@ -182,8 +182,8 @@ EOF
 	# Map alias to canonical format
 	local fmt="${format}"
 	case "${fmt}" in
-		pascal|PascalCase|大驼峰) fmt="pascal" ;;
 		camel|camelCase|小驼峰) fmt="camel" ;;
+		pascal|PascalCase|大驼峰) fmt="pascal" ;;
 		snake|snake_case|小蛇形) fmt="snake" ;;
 		snake_upper|SNAKE_CASE|大蛇形) fmt="snake_upper" ;;
 		snake_cap|Capitalized_Snake_Case|首字母大写蛇形) fmt="snake_cap" ;;
@@ -283,12 +283,6 @@ EOF
 		local out="" i w
 		
 		case "$style" in
-			pascal)
-				for w in "${words[@]}"; do
-					out+="$(_capitalize_first_ascii "$w")"
-				done
-				printf '%s' "$out"
-				;;
 			camel)
 				i=0
 				for w in "${words[@]}"; do
@@ -298,6 +292,12 @@ EOF
 						out+="$(_capitalize_first_ascii "$w")"
 					fi
 					i=$((i+1))
+				done
+				printf '%s' "$out"
+				;;
+			pascal)
+				for w in "${words[@]}"; do
+					out+="$(_capitalize_first_ascii "$w")"
 				done
 				printf '%s' "$out"
 				;;
@@ -347,10 +347,10 @@ EOF
 	fi
 
 	# Alfred Script Filter mode: optimized batch processing
-	local styles=(pascal camel snake snake_upper snake_cap kebab dot upper lower)
+	local styles=(camel pascal snake snake_upper snake_cap kebab dot upper lower)
 	local labels=(
-		'PascalCase | 大驼峰'
 		'camelCase | 小驼峰'
+		'PascalCase | 大驼峰'
 		'snake_case | 小蛇形'
 		'SNAKE_CASE | 大蛇形'
 		'Capitalized_Snake_Case | 首字母大写蛇形'
