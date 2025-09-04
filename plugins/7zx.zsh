@@ -689,8 +689,13 @@
                 fi
                 config[action]="extract"
                 config[source]="$2"
-                config[target]="${3:-.}"  # 默认当前目录
-                [[ -n "$3" && "$3" != -* ]] && shift 3 || shift 2
+                if [[ -n "$3" && "$3" != -* ]]; then
+                    config[target]="$3"
+                    shift 3
+                else
+                    config[target]="."
+                    shift 2
+                fi
                 ;;
             -l|--list)
                 if [[ $# -lt 2 || -z "$2" || "$2" == -* ]]; then
