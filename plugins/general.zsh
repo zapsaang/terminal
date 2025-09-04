@@ -26,7 +26,18 @@ bdsn() {
 }
 
 7zxe() {
-    XE_PASSWORD=$(gen_pass -i "$1")
+    XE_PASSWORD=$(gen_pass -i "$1") && \
     7zz x -p"$XE_PASSWORD" -so "$1" | tar -xf -
     unset XE_PASSWORD
+}
+
+7zce() {
+    CE_PASSWORD=$(gen_pass -i "$1") && \
+    tar --ignore-failed-read -cf - $2 2>/dev/null | \
+    7z a -mmt=off -t7z -mhe=on -p"$CE_PASSWORD" -si $1
+    unset CE_PASSWORD
+}
+
+mkcd() {
+    mkdir -p "$1" && cd "$1"
 }
