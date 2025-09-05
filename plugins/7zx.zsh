@@ -485,7 +485,6 @@
                 ;;
             "extract"|"list"|"info")
                 input_file=$(basename "${inner_config[source]}")
-                # Remove volume suffix (.001, .002, etc.) for consistent password generation
                 input_file=$(echo "$input_file" | sed 's/\.\([0-9]\{3\}\)$//')
                 ;;
             *)
