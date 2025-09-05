@@ -467,6 +467,28 @@
         return $exit_code
     }
     
+    _is_volume_archive() {
+        local file="$1"
+        local filename=$(basename "$file")
+        [[ "$filename" =~ \.[0-9]{3}$ ]] || return 1
+        local base_name="${filename%.*}"
+        local volume_dir=$(dirname "$file")
+        local volume_count=$(ls "$volume_dir"/"$base_name".[0-9][0-9][0-9] 2>/dev/null | wc -l)
+        [[ $volume_count -gt 1 ]]
+    }
+    
+    _get_password_input_name() {
+        local source_file="$1"
+        local filename=$(basename "$source_file")
+        
+        if _is_volume_archive "$source_file"; then
+            _log_debug "Detected multi-volume archive"
+            echo "${filename%.*}"  # Remove .XXX suffix
+        else
+            _log_debug "Single file (not a volume set)"
+            echo "$filename"        # Keep original name
+        fi
+    }
     
     _generate_password_if_needed() {
         if [[ "${inner_config[gen_pass]}" != true ]]; then
@@ -484,8 +506,7 @@
                 input_file=$(basename "${inner_config[target]}")
                 ;;
             "extract"|"list"|"info")
-                input_file=$(basename "${inner_config[source]}")
-                input_file=$(echo "$input_file" | sed 's/\.\([0-9]\{3\}\)$//')
+                input_file=$(_get_password_input_name "${inner_config[source]}")
                 ;;
             *)
                 _handle_error 1 "Invalid action for password generation: ${inner_config[action]}"
@@ -521,7 +542,6 @@
         
         return 0
     }
-
     
     _compress_with_tar() {
         local src="$1" tgt="$2"
