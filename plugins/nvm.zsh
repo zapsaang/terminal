@@ -1,4 +1,4 @@
-export NVM_DIR="$HOME/.nvm" # 可以提前设置 NVM_DIR
+export NVM_DIR="$HOME/.nvm"
 
 function nvmup() {
   if [ -s "/opt/homebrew/opt/nvm/nvm.sh" ]; then
