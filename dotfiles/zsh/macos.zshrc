@@ -8,6 +8,14 @@ if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
 fi
 
 source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
@@ -26,6 +34,7 @@ ZINIT_1MAP+=(
   ZSTP:: https://github.com/zapsaang/terminal/trunk/plugins/
   ZSTT:: https://github.com/zapsaang/terminal/trunk/themes/
 ) 2>/dev/null || true
+
 ZINIT_2MAP+=(
   ZST:: https://raw.githubusercontent.com/zapsaang/terminal/master/
   ZSTP:: https://raw.githubusercontent.com/zapsaang/terminal/master/plugins/
@@ -41,16 +50,9 @@ zinit ice lucid wait='1' atinit='zpcompinit'
 zinit light zdharma-continuum/fast-syntax-highlighting
 zinit light Aloxaf/fzf-tab
 
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 # Powerlevel10k
-zinit ice depth=1; zinit light romkatv/powerlevel10k
-
+zinit ice depth=1
+zinit light romkatv/powerlevel10k
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
@@ -63,8 +65,10 @@ zinit snippet ZSTP::icloud.zsh
 zinit snippet ZSTP::brew.zsh
 zinit snippet ZSTP::go.zsh
 zinit snippet ZSTP::git.zsh
-zinit snippet ZSTP::nvm.zsh
 zinit snippet ZSTP::gen_pass.zsh
+zinit snippet ZSTP::string_case_converter.zsh
+zinit snippet ZSTP::unicode_converter.zsh
+zinit snippet ZSTP::7zx.zsh
 zinit snippet ZSTT::fzf_dracula.zsh
 
 zinit snippet OMZL::key-bindings.zsh
@@ -83,4 +87,11 @@ bindkey '^N' history-substring-search-down
 bindkey '^@' autosuggest-accept
 
 # Others
-zinit load djui/alias-tips
+#zinit load djui/alias-tips
+
+source <(fzf --zsh)
+
+zinit ice wait lucid
+zinit snippet $HOME/.sdkman/bin/sdkman-init.sh
+#source "$HOME/.sdkman/bin/sdkman-init.sh"
+
