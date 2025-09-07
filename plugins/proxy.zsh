@@ -71,14 +71,14 @@ function unset_proxy() {
 
 function show_proxy() {
   # Print the set proxy environment variables for testing
-  echo "http_proxy: $http_proxy"
-  echo "HTTP_PROXY: $HTTP_PROXY"
-  echo "https_proxy: $https_proxy"
-  echo "HTTPS_PROXY: $https_proxy"
-  echo "ftp_proxy: $ftp_proxy"
-  echo "FTP_PROXY: $ftp_proxy"
-  echo "all_proxy: $all_proxy"
-  echo "ALL_PROXY: $all_proxy"
+  echo "http_proxy: \t$http_proxy"
+  echo "HTTP_PROXY: \t$HTTP_PROXY"
+  echo "https_proxy: \t$https_proxy"
+  echo "HTTPS_PROXY: \t$https_proxy"
+  echo "ftp_proxy: \t$ftp_proxy"
+  echo "FTP_PROXY: \t$ftp_proxy"
+  echo "all_proxy: \t$all_proxy"
+  echo "ALL_PROXY: \t$all_proxy"
 }
 
 # Aliases
