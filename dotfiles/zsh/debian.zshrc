@@ -59,6 +59,7 @@ zinit snippet ZSTP::general.zsh
 zinit snippet ZSTP::docker.zsh
 zinit snippet ZSTP::nvim.zsh
 zinit snippet ZSTP::gen_pass.zsh
+zinit snippet ZSTP::7zx.zsh
 zinit snippet ZSTT::fzf_dracula.zsh
 
 zinit snippet OMZL::key-bindings.zsh
