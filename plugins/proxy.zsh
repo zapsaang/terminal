@@ -1,8 +1,4 @@
-#!/bin/zsh
-# Auto configure zsh proxy env based on system preferences
-
-# Function to set proxy environment variables
-set_proxy() {
+function set_proxy() {
   local type=$1
   local protocol=$2
   local server=$3
@@ -63,9 +59,11 @@ function configure_proxy() {
 function unset_proxy() {
   unset https_proxy
   unset http_proxy
+  unset ftp_proxy
   unset all_proxy
   unset HTTPS_PROXY
   unset HTTP_PROXY
+  unset FTP_PROXY
   unset ALL_PROXY
 
   echo "Proxy settings unset."
