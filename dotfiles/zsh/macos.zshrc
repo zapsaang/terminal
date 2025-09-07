@@ -90,8 +90,3 @@ bindkey '^@' autosuggest-accept
 #zinit load djui/alias-tips
 
 source <(fzf --zsh)
-
-zinit ice wait lucid
-zinit snippet $HOME/.sdkman/bin/sdkman-init.sh
-#source "$HOME/.sdkman/bin/sdkman-init.sh"
-
