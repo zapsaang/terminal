@@ -1,18 +1,13 @@
-[[ -s "/home/linuxbrew/.linuxbrew/bin/brew" && $(which brew) == "brew not found" ]] && {
-    export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
-    export HOMEBREW_CELLAR="/home/linuxbrew/.linuxbrew/Cellar"
-    export HOMEBREW_REPOSITORY="/home/linuxbrew/.linuxbrew/Homebrew"
-    export PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin${PATH+:$PATH}"
-    export MANPATH="/home/linuxbrew/.linuxbrew/share/man${MANPATH+:$MANPATH}:"
-    export INFOPATH="/home/linuxbrew/.linuxbrew/share/info:${INFOPATH:-}"
-}
-
-[[ -s "/opt/homebrew/bin/brew" && $(which brew) == "brew not found" ]] && {
-    export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
-    export HOMEBREW_REPOSITORY="/opt/homebrew";
-    export PATH="/opt/homebrew/bin:/opt/homebrew/sbin${PATH+:$PATH}";
-    export MANPATH="/opt/homebrew/share/man${MANPATH+:$MANPATH}:";
-    export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
-}
+for brew_path in "/opt/homebrew" "/home/linuxbrew/.linuxbrew"; do
+    if [[ -s "$brew_path/bin/brew" ]] && (( ! $+commands[brew] )); then
+        export HOMEBREW_PREFIX="$brew_path"
+        export HOMEBREW_CELLAR="$brew_path/Cellar"
+        export HOMEBREW_REPOSITORY="$brew_path"
+        export PATH="$brew_path/bin:$brew_path/sbin${PATH+:$PATH}"
+        export MANPATH="$brew_path/share/man${MANPATH+:$MANPATH}:"
+        export INFOPATH="$brew_path/share/info:${INFOPATH:-}"
+        break
+    fi
+done
 
 alias bud="brew update && brew upgrade"
