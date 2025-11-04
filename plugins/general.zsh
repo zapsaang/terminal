@@ -17,6 +17,19 @@ alias sudo="sudo -i"
 alias df="df -h"
 alias du="du -h"
 
+if (( $+commands[curlie] )); then
+    alias curl="curlie"
+fi
+if (( $+commands[eza] )); then
+    alias ll="eza -lag --icons"
+fi
+if (( $+commands[bat] )); then
+    alias cat="bat"
+fi
+if (( $+commands[rg] )); then
+    alias grep="rg"
+fi
+
 bddc() {
     echo "$1" | base64 -Dd | zstd -d -o "$2"
 }
