@@ -17,11 +17,28 @@ alias sudo="sudo -i"
 alias df="df -h"
 alias du="du -h"
 
+is_interactive_shell() {
+    case "$-" in
+        *i*) ;;        
+        *) return 1 ;;
+    esac
+    [[ -t 0 ]] || return 1
+    return 0
+}
+
+curl() {
+    if (( $+commands[curlie] )); then
+        alias curl="curlie"
+    fi
+
+
+}
+
 if (( $+commands[curlie] )); then
     alias curl="curlie"
 fi
 if (( $+commands[eza] )); then
-    alias ll="eza -lag --icons"
+    alias ll="eza -ahlgF --icons --group-directories-first"
 fi
 if (( $+commands[bat] )); then
     alias cat="bat"
