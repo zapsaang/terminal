@@ -21,7 +21,7 @@ if (( $+commands[curlie] )); then
     alias curl="curlie"
 fi
 if (( $+commands[eza] )); then
-    alias ll="eza -ahlgF --icons --group-directories-first"
+    alias ll="eza -ahlgF --icons --group-directories-first --time-style=+%Y-%m-%d\ %H:%M:%S"
 fi
 if (( $+commands[bat] )); then
     alias cat="bat"
