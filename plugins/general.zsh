@@ -17,23 +17,6 @@ alias sudo="sudo -i"
 alias df="df -h"
 alias du="du -h"
 
-is_interactive_shell() {
-    case "$-" in
-        *i*) ;;        
-        *) return 1 ;;
-    esac
-    [[ -t 0 ]] || return 1
-    return 0
-}
-
-curl() {
-    if (( $+commands[curlie] )); then
-        alias curl="curlie"
-    fi
-
-
-}
-
 if (( $+commands[curlie] )); then
     alias curl="curlie"
 fi
@@ -46,6 +29,15 @@ fi
 if (( $+commands[rg] )); then
     alias grep="rg"
 fi
+
+is_interactive_shell() {
+    case "$-" in
+        *i*) ;;        
+        *) return 1 ;;
+    esac
+    [[ -t 0 ]] || return 1
+    return 0
+}
 
 bddc() {
     echo "$1" | base64 -Dd | zstd -d -o "$2"
