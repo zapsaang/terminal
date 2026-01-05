@@ -162,3 +162,6 @@ bindkey "µ" copy-prev-shell-word
 ## Fix weird sequence that rxvt produces
 #bindkey -s '^[[Z' '\t'
 #
+
+bindkey '^@' autosuggest-accept
+bindkey 'å' autosuggest-accept
