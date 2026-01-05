@@ -29,8 +29,8 @@ fi
 if (( $+commands[rg] )); then
     alias grep="rg"
 fi
-if (( $+functions[__zoxide_z] )); then
-    alias cd="__zoxide_z"
+if (( $+functions[z] )); then
+    alias cd="z"
 fi
 
 is_interactive_shell() {
