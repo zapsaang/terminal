@@ -29,6 +29,9 @@ fi
 if (( $+commands[rg] )); then
     alias grep="rg"
 fi
+if (( $+commands[z] )); then
+    alias cd="z"
+fi
 
 is_interactive_shell() {
     case "$-" in
