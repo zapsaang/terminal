@@ -29,7 +29,7 @@ fi
 if (( $+commands[rg] )); then
     alias grep="rg"
 fi
-if (( $+commands[z] )); then
+if (( $+functions[z] )); then
     alias cd="z"
 fi
 
