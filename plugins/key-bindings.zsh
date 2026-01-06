@@ -111,10 +111,10 @@ bindkey -M viins '^[[1;5D' backward-word
 bindkey -M vicmd '^[[1;5D' backward-word
 
 # [Option-Delete] - delete whole forward-word
-bindkey '^[[3;3~' kill-word
-bindkey -M emacs '^[[3;3~' kill-word
-bindkey -M viins '^[[3;3~' kill-word
-bindkey -M vicmd '^[[3;3~' kill-word
+bindkey '^[^[[3~' kill-word
+bindkey -M emacs '^[^[[3~' kill-word
+bindkey -M viins '^[^[[3~' kill-word
+bindkey -M vicmd '^[^[[3~' kill-word
 
 # [Option-RightArrow] - move forward one word
 bindkey '^[[1;3C' forward-word
