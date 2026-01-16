@@ -24,7 +24,7 @@ if (( $+commands[eza] )); then
     alias ll="eza -ahlgF --icons --group-directories-first --time-style=+%Y-%m-%d\ %H:%M:%S"
 fi
 if (( $+commands[bat] )); then
-    alias cat="bat"
+    alias cat="bat --paging=never"
 fi
 if (( $+commands[rg] )); then
     alias grep="rg"
