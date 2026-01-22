@@ -105,12 +105,18 @@ bindkey -M vicmd '^[[3;5~' kill-word
 bindkey -M emacs '^[[1;5C' forward-word
 bindkey -M viins '^[[1;5C' forward-word
 bindkey -M vicmd '^[[1;5C' forward-word
+
 # [Ctrl-LeftArrow] - move backward one word
 bindkey -M emacs '^[[1;5D' backward-word
 bindkey -M viins '^[[1;5D' backward-word
 bindkey -M vicmd '^[[1;5D' backward-word
 
 # [Option-Delete] - delete whole forward-word
+bindkey '^[(' kill-word
+bindkey -M emacs '^[(' kill-word
+bindkey -M viins '^[(' kill-word
+bindkey -M vicmd '^[(' kill-word
+
 bindkey '^[^[[3~' kill-word
 bindkey -M emacs '^[^[[3~' kill-word
 bindkey -M viins '^[^[[3~' kill-word
@@ -121,17 +127,19 @@ bindkey '^[[1;3C' forward-word
 bindkey -M emacs '^[[1;3C' forward-word
 bindkey -M viins '^[[1;3C' forward-word
 bindkey -M vicmd '^[[1;3C' forward-word
+
 # [Option-LeftArrow] - move backward one word
 bindkey '^[[1;3D' backward-word
 bindkey -M emacs '^[[1;3D' backward-word
 bindkey -M viins '^[[1;3D' backward-word
 bindkey -M vicmd '^[[1;3D' backward-word
 
-bindkey '∑' kill-region                             # [Option-w] - Kill from the cursor to the mark
-bindkey -s '¬' '^q ll\n'                            # [Option-l] - run command: ls
+bindkey '∑' kill-region                               # [Option-w] - Kill from the cursor to the mark
+bindkey -s '^[l' '^q ll\n'                            # [Option-l] - run command: ll
+bindkey -s '¬' '^q ll\n'                              # [Option-l] - run command: ll
 
 bindkey '\ew' kill-region                             # [Esc-w] - Kill from the cursor to the mark
-bindkey -s '\el' '^q ll\n'                            # [Esc-l] - run command: ls
+bindkey -s '\el' '^q ll\n'                            # [Esc-l] - run command: ll
 
 bindkey '^r' history-incremental-search-backward      # [Ctrl-r] - Search backward incrementally for a specified string. The string may begin with ^ to anchor the search to the beginning of the line.
 bindkey ' ' magic-space                               # [Space] - don't do history expansion
@@ -167,4 +175,5 @@ bindkey "µ" copy-prev-shell-word
 #
 
 bindkey '^@' autosuggest-accept
+bindkey '^[a' autosuggest-accept
 bindkey 'å' autosuggest-accept
