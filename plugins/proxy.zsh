@@ -85,5 +85,7 @@ function show_proxy() {
 alias proxy="configure_proxy"
 alias unproxy="unset_proxy"
 
-# Call the configure_proxy function to automatically configure proxy based on system settings
-configure_proxy
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # Call the configure_proxy function to automatically configure proxy based on system settings
+    configure_proxy
+fi
