@@ -35,6 +35,12 @@ function gplf() {
   git pull --force origin "$current_branch":"$current_branch"
 }
 
+function gfrh() {
+  current_branch=$(git rev-parse --abbrev-ref HEAD)
+  git fetch origin "$current_branch"
+  git reset --hard "origin/$current_branch"
+}
+
 function gck() {
   if [ -z "$1" ]; then
     echo "Usage: gck <branch>"
