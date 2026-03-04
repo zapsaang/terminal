@@ -1,50 +1,73 @@
-export NVM_DIR="$HOME/.nvm"
 
-function nvmup() {
-  if [ -s "/opt/homebrew/opt/nvm/nvm.sh" ]; then
-    source "/opt/homebrew/opt/nvm/nvm.sh" # This loads nvm
-  else
-    echo "NVM script not found at /opt/homebrew/opt/nvm/nvm.sh"
-    return 1
-  fi
+function zt-telescope() {
+    local RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case"
+    
+    local selection=$(
+        FZF_DEFAULT_COMMAND="$RG_PREFIX ''" \
+        fzf --bind "change:reload:$RG_PREFIX {q} || true" \
+            --ansi --disabled --query "" \
+            --delimiter ':' \
+            --height=100% --layout=reverse \
+            --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
+            --preview-window 'right,50%,border-left,+{2}+3/3,~3'
+    )
 
-  if [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ]; then
-    source "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" # This loads nvm bash_completion
-  fi
-
-  if [[ -n "$1" ]]; then
-    nvm use "$1"
-  else
-    nvm use --lts || (nvm install --lts && nvm use --lts)
-  fi
-}
-
-if functions command_not_found_handler > /dev/null 2>&1 && ! alias _original_command_not_found_handler_covered_by_nvmup > /dev/null 2>&1; then
-  alias _original_command_not_found_handler_covered_by_nvmup=command_not_found_handler
-fi
-
-function command_not_found_handler() {
-  local cmd=$1
-
-  if [[ "$cmd" == "npm" || "$cmd" == "node" || "$cmd" == "nvm" ]]; then
-    echo "$cmd not found, automatically loading nvm..." >&2
-    nvmup
-
-    if command -v "$cmd" >/dev/null 2>&1; then
-      echo "Retrying '$cmd'..." >&2
-      "$cmd" "${@:2}" 
-      return $?
-    else
-      echo "Failed to load '$cmd' via nvm." >&2
-      return 127
+    if [[ -z "$selection" ]]; then
+        return 0
     fi
-  fi
 
-  if command -v _original_command_not_found_handler_covered_by_nvmup >/dev/null 2>&1; then
-    _original_command_not_found_handler_covered_by_nvmup "$@"
-    return $?
-  fi
+    local file line col _rest
+    IFS=: read -r file line col _rest <<< "$selection"
 
-  echo "zsh: command not found: $cmd" >&2
-  return 127
+    if [[ -n "$ZELLIJ" ]]; then
+        zellij action new-pane --close-on-exit -- nvim "+call cursor($line, $col)" "$file"
+    elif [[ -n "$TMUX" ]]; then
+        tmux split-window -h "nvim '+call cursor($line, $col)' '$file'"
+    else
+        nvim "+call cursor($line, $col)" "$file"
+    fi
 }
+
+function _zt-telescope_widget() {
+    zt-telescope
+    
+    zle reset-prompt
+    zle redisplay
+}
+zle -N _zt-telescope_widget
+bindkey '^f' _zt-telescope_widget
+
+function zt-sessionizer() {
+    local PROJECT_DIR=$(fd . ~/Project ~/Code ~/.config \
+        --min-depth 1 --max-depth 2 --type d 2>/dev/null \
+        | fzf --height 40% --reverse --border=rounded --prompt="🚀 Project > ")
+
+    if [[ -z "$PROJECT_DIR" ]]; then
+        return 0
+    fi
+
+    local PROJECT_NAME=$(basename "$PROJECT_DIR" | tr '.' '_')
+    local ABS_DIR=$(builtin cd "$PROJECT_DIR" 2>/dev/null && pwd)
+
+    if [[ -n "$ZELLIJ" ]]; then
+        zellij action new-tab --cwd "$ABS_DIR" --name "$PROJECT_NAME"
+    elif [[ -n "$TMUX" ]]; then
+        if ! tmux has-session -t "$PROJECT_NAME" 2> /dev/null; then
+            tmux new-session -d -s "$PROJECT_NAME" -c "$PROJECT_DIR"
+        fi
+        tmux switch-client -t "$PROJECT_NAME"
+        
+    else
+        cd "$PROJECT_DIR" || return 1
+        zellij attach -c "$PROJECT_NAME"
+    fi
+}
+
+function _zt-sessionizer_widget() {
+    zt-sessionizer
+    zle reset-prompt
+    zle redisplay
+}
+
+zle -N _zt-sessionizer_widget
+bindkey '^e' _zt-sessionizer_widget
