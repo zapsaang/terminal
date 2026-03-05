@@ -1,4 +1,3 @@
-
 function zt-telescope() {
     local RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case"
     
@@ -24,13 +23,13 @@ function zt-telescope() {
     elif [[ -n "$TMUX" ]]; then
         tmux split-window -h "nvim '+call cursor($line, $col)' '$file'"
     else
-        nvim "+call cursor($line, $col)" "$file"
+        nvim "+call cursor($line, $col)" "$file" </dev/tty >/dev/tty 2>&1
     fi
 }
 
 function _zt-telescope_widget() {
+    zle -I
     zt-telescope
-    
     zle reset-prompt
     zle redisplay
 }
@@ -38,32 +37,37 @@ zle -N _zt-telescope_widget
 bindkey '^f' _zt-telescope_widget
 
 function zt-sessionizer() {
-    local PROJECT_DIR=$(fd . ~/Project ~/Code ~/.config \
-        --min-depth 1 --max-depth 2 --type d 2>/dev/null \
-        | fzf --height 40% --reverse --border=rounded --prompt="🚀 Project > ")
+    local PROJECT_DIR=$(
+        (
+            fd . ~/Code --min-depth 4 --max-depth 4 --type d &
+            fd . ~/Projects --min-depth 3 --max-depth 3 --type d &
+            fd . ~/.config --min-depth 1 --max-depth 1 --type d &
+            
+            wait
+        ) 2>/dev/null | fzf --height 60% --reverse --border=rounded --prompt="🚀 Project > "
+    )
 
     if [[ -z "$PROJECT_DIR" ]]; then
         return 0
     fi
 
     local PROJECT_NAME=$(basename "$PROJECT_DIR" | tr '.' '_')
+    local ABS_DIR=$(builtin cd "$PROJECT_DIR" 2>/dev/null && pwd)
 
     if [[ -n "$ZELLIJ" ]]; then
-        zellij action new-tab -l default -c "$PROJECT_DIR" -n "$PROJECT_NAME"
-        
+        zellij action new-tab --cwd "$ABS_DIR" --name "$PROJECT_NAME"
     elif [[ -n "$TMUX" ]]; then
         if ! tmux has-session -t "$PROJECT_NAME" 2> /dev/null; then
-            tmux new-session -d -s "$PROJECT_NAME" -c "$PROJECT_DIR"
+            tmux new-session -d -s "$PROJECT_NAME" -c "$ABS_DIR"
         fi
         tmux switch-client -t "$PROJECT_NAME"
-        
     else
-        cd "$PROJECT_DIR" || return 1
-        zellij attach -c "$PROJECT_NAME"
+        zellij attach -c "$PROJECT_NAME" options --default-cwd "$ABS_DIR" </dev/tty >/dev/tty 2>&1
     fi
 }
 
 function _zt-sessionizer_widget() {
+    zle -I
     zt-sessionizer
     zle reset-prompt
     zle redisplay
