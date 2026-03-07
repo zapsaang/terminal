@@ -44,7 +44,7 @@ function zt-sessionizer() {
             fd . ~/.config --min-depth 1 --max-depth 1 --type d &
             
             wait
-        ) 2>/dev/null | fzf --height 60% --reverse --border=rounded --prompt="🚀 Project > "
+        ) 2>/dev/null | fzf --height 60% --layout=reverse --preview 'eza -1aTF --color=always --icons --group-directories-first {1}' --preview-window 'right,60%,border-left,+{2}+3/3,~3'
     )
 
     if [[ -z "$PROJECT_DIR" ]]; then
