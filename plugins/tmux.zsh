@@ -34,7 +34,7 @@ function _zt-telescope_widget() {
     zle redisplay
 }
 zle -N _zt-telescope_widget
-bindkey '^Gf' _zt-telescope_widget
+bindkey '^Xf' _zt-telescope_widget
 
 function zt-sessionizer() {
     local PROJECT_DIR=$(
@@ -74,4 +74,4 @@ function _zt-sessionizer_widget() {
 }
 
 zle -N _zt-sessionizer_widget
-bindkey '^Ge' _zt-sessionizer_widget
+bindkey '^Xe' _zt-sessionizer_widget
